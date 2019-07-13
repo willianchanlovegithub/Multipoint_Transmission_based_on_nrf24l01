@@ -1,0 +1,128 @@
+C51 COMPILER V9.59.0.0   LCD1602                                                           08/21/2018 13:00:52 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\Objects\LCD1602.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE source\LCD1602.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include;.\sourc
+                    -e) DEBUG OBJECTEXTEND PRINT(.\Listings\LCD1602.lst) OBJECT(.\Objects\LCD1602.obj)
+
+line level    source
+
+   1          
+   2          #include <intrins.h>
+   3          #include "LCD1602.h"
+   4          
+   5          //延时程序仅适用于STC89xxx
+   6          void Delay1ms()         //@11.0592MHz
+   7          {
+   8   1              unsigned char i, j;
+   9   1      
+  10   1              _nop_();
+  11   1              i = 2;
+  12   1              j = 199;
+  13   1              do
+  14   1              {
+  15   2                      while (--j);
+  16   2              } while (--i);
+  17   1      }
+  18          
+  19          void Delay10ms()                //@11.0592MHz
+  20          {
+  21   1              unsigned char i, j;
+  22   1      
+  23   1              i = 18;
+  24   1              j = 235;
+  25   1              do
+  26   1              {
+  27   2                      while (--j);
+  28   2              } while (--i);
+  29   1      }
+  30          
+  31          void Delay1000ms()              //@11.0592MHz
+  32          {
+  33   1              unsigned char i, j, k;
+  34   1      
+  35   1              _nop_();
+  36   1              i = 8;
+  37   1              j = 1;
+  38   1              k = 243;
+  39   1              do
+  40   1              {
+  41   2                      do
+  42   2                      {
+  43   3                              while (--k);
+  44   3                      } while (--j);
+  45   2              } while (--i);
+  46   1      }
+  47          
+  48          uchar LCD1602_Wait(void) //读1602内部状态字 ，查看是否准备好
+  49          {
+  50   1              uchar Sta;
+  51   1              LcdRs=0;                                   //LcdRS=L,LcdRw=H,LcdEn=H 输出D0~D7状态字
+  52   1              LcdRw=1;                   Delay1ms();   
+  53   1              LcdEn=1;              
+  54   1        Delay1ms();   
+C51 COMPILER V9.59.0.0   LCD1602                                                           08/21/2018 13:00:52 PAGE 2   
+
+  55   1              Sta = LCD1602_Port;      
+  56   1        Delay1ms();                                                            
+  57   1              LcdEn=0;
+  58   1              Sta = Sta & 0x80;
+  59   1              return Sta;             
+  60   1      }
+  61          
+  62          void LCD1602_Write(bit style, uchar input)
+  63          {
+  64   1              while(LCD1602_Wait());                          //若忙碌，则等待,免得显示乱码
+  65   1              LcdEn = 0;                                                                                      
+  66   1              LcdRs = style;                                          //设置是数据'1',还是命令'0'
+  67   1              LcdRw = 0;               
+  68   1        Delay1ms();   
+  69   1              LCD1602_Port = input;
+  70   1              Delay1ms();              
+  71   1              LcdEn = 1;               
+  72   1        Delay1ms();   
+  73   1              LcdEn = 0;      
+  74   1              Delay1ms();
+  75   1      }
+  76          
+  77          void LCD1602_Initial()
+  78          {
+  79   1              LcdEn=0;
+  80   1              LCD1602_Write(0,0x38);    //8位数据端口,2行显示,5*7点阵 
+  81   1              LCD1602_Write(0,0x0c);    //开启显示, 无光标
+  82   1              LCD1602_Write(0,0x06);    //AC递增, 画面不动       
+  83   1              LCD1602_Write(0,0x01);    //清屏
+  84   1              Delay10ms();
+  85   1      }
+  86          
+  87          void LCD1602_GotoXY(uchar x, uchar y)    //X为显示指针的位置，即为各行的第几个位置，Y选行
+  88          {
+  89   1              if(x==0)
+  90   1                      LCD1602_Write(0,0x80+y);
+  91   1              if(x==1)
+  92   1                      LCD1602_Write(0,(0x80+0x40+y));
+  93   1      }
+  94          
+  95          void LCD1602_Display_NoXY(uchar *str)   //向LCD写入字符串
+  96          {
+  97   1              while(*str!='\0')
+  98   1              {
+  99   2                      LCD1602_Write(1,*str);
+ 100   2                      str++;
+ 101   2              }
+ 102   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    187    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       1
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

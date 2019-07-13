@@ -1,0 +1,193 @@
+C51 COMPILER V9.59.0.0   LCD1602                                                           08/21/2018 21:44:10 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LCD1602
+OBJECT MODULE PLACED IN .\Objects\LCD1602.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE source\LCD1602.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include;.\source) DEB
+                    -UG OBJECTEXTEND PRINT(.\Listings\LCD1602.lst) OBJECT(.\Objects\LCD1602.obj)
+
+line level    source
+
+   1          
+   2          #include <intrins.h>
+   3          #include "LCD1602.h"
+   4          
+   5          unsigned char datas[6] = {0}; //µÚÒ»Î»´æ·ÅÕý¸º·ûºÅ£¬µÚ¶þÎ»µ½µÚÁùÎ»´æ·ÅÎÂ¶ÈÖµ
+   6          
+   7          //ÑÓÊ±³ÌÐò½öÊÊÓÃÓÚSTC89xxx
+   8          void Delay1000ms()              //@11.0592MHz
+   9          {
+  10   1              unsigned char i, j, k;
+  11   1      
+  12   1              _nop_();
+  13   1              i = 8;
+  14   1              j = 1;
+  15   1              k = 243;
+  16   1              do
+  17   1              {
+  18   2                      do
+  19   2                      {
+  20   3                              while (--k);
+  21   3                      } while (--j);
+  22   2              } while (--i);
+  23   1      }
+  24          
+  25          void Delay10ms()                //@11.0592MHz
+  26          {
+  27   1              unsigned char i, j;
+  28   1      
+  29   1              i = 18;
+  30   1              j = 235;
+  31   1              do
+  32   1              {
+  33   2                      while (--j);
+  34   2              } while (--i);
+  35   1      }
+  36          
+  37          void Delay1ms()         //@11.0592MHz
+  38          {
+  39   1              unsigned char i, j;
+  40   1      
+  41   1              _nop_();
+  42   1              i = 2;
+  43   1              j = 199;
+  44   1              do
+  45   1              {
+  46   2                      while (--j);
+  47   2              } while (--i);
+  48   1      }
+  49          
+  50          /*uchar LCD1602_Wait(void)                 //¶Á1602ÄÚ²¿×´Ì¬×Ö £¬²é¿´ÊÇ·ñ×¼±¸ºÃ
+  51          {
+  52                  uchar Sta;
+  53                  LcdRs=0;                                   //LcdRS=L,LcdRw=H,LcdEn=H Êä³öD0~D7×´Ì¬×Ö
+  54                  LcdRw=1;                 
+C51 COMPILER V9.59.0.0   LCD1602                                                           08/21/2018 21:44:10 PAGE 2   
+
+  55                  Delay1ms();   
+  56                  LcdEn=1;              
+  57                  Delay1ms();   
+  58                  Sta = LCD1602_Port;      
+  59                  Delay1ms();                                                      
+  60                  LcdEn=0;
+  61                  Sta = Sta & 0x80;
+  62                  return Sta;             
+  63          }*/
+  64          
+  65          void LCD1602_Write(bit style, uchar input)
+  66          {
+  67   1              //while(LCD1602_Wait());                        //ÈôÃ¦Âµ£¬ÔòµÈ´ý,ÃâµÃÏÔÊ¾ÂÒÂë
+  68   1              LcdEn = 0;                                                                                      
+  69   1              LcdRs = style;                                          //ÉèÖÃÊÇÊý¾Ý'1',»¹ÊÇÃüÁî'0'
+  70   1              //LcdRw = 0;              
+  71   1              Delay1ms();     
+  72   1              LCD1602_Port = input;   
+  73   1              Delay1ms();                      
+  74   1              LcdEn = 1;               
+  75   1              Delay1ms();      
+  76   1              LcdEn = 0;                
+  77   1             Delay1ms();
+  78   1      }
+  79          
+  80          void LCD1602_Initial()
+  81          {
+  82   1        LcdRw=0;
+  83   1              LcdEn=0;
+  84   1              LCD1602_Write(0,0x38);               //8Î»Êý¾Ý¶Ë¿Ú,2ÐÐÏÔÊ¾,5*7µãÕó
+  85   1              LCD1602_Write(0,0x0c);  //¿ªÆôÏÔÊ¾, ÎÞ¹â±ê
+  86   1              LCD1602_Write(0,0x06);       //ACµÝÔö, »­Ãæ²»¶¯
+  87   1              LCD1602_Write(0,0x01);   //ÇåÆÁ
+  88   1              Delay10ms();
+  89   1      }
+  90          
+  91          void LCD1602_GotoXY(uchar x, uchar y)      //XÎªÏÔÊ¾Ö¸ÕëµÄÎ»ÖÃ£¬¼´Îª¸÷ÐÐµÄµÚ¼¸¸öÎ»ÖÃ£¬YÑ¡ÐÐ
+  92          {
+  93   1              if(x==0)
+  94   1                      LCD1602_Write(0,0x80+y);
+  95   1              if(x==1)
+  96   1                      LCD1602_Write(0,(0x80+0x40+y));
+  97   1      }
+  98          
+  99          void LCD1602_Display_NoXY(uchar *str)                                    //ÏòLCDÐ´Èë×Ö·û´®
+ 100          {
+ 101   1              while(*str!='\0')
+ 102   1              {
+ 103   2                      LCD1602_Write(1,*str);
+ 104   2                      str++;
+ 105   2              }
+ 106   1      }
+ 107          
+ 108          
+ 109          //1602ÏÔÊ¾ÎÂ¶ÈÖµ
+ 110          void LcdDisplayTemp(int temp)    //lcdÏÔÊ¾
+ 111          {
+ 112   1              
+ 113   1          
+ 114   1        //unsigned char datas[5] = {0, 0, 0, 0, 0}; //¶¨ÒåÊý×é£¬´æ·ÅÎÂ¶ÈÖµ
+ 115   1              float tp;  
+ 116   1              if(temp< 0)                             //µ±ÎÂ¶ÈÖµÎª¸ºÊý
+C51 COMPILER V9.59.0.0   LCD1602                                                           08/21/2018 21:44:10 PAGE 3   
+
+ 117   1              {
+ 118   2                      LCD1602_GotoXY(1,5);
+ 119   2                  LCD1602_Write(1,'-');               //ÏÔÊ¾¸º
+ 120   2                              datas[0]=0x2d;//°Ñ¡°-¡±µÄASCIIÂë´æ·ÅÔÚdatas[]Êý×éµÚÒ»Î»
+ 121   2                              
+ 122   2                      //ÒòÎª¶ÁÈ¡µÄÎÂ¶ÈÊÇÊµ¼ÊÎÂ¶ÈµÄ²¹Âë£¬ËùÒÔ¼õ1£¬ÔÙÈ¡·´Çó³öÔ­Âë
+ 123   2                      temp=temp-1;
+ 124   2                      temp=~temp;
+ 125   2                      tp=temp;
+ 126   2                      temp=tp*0.0625*100+0.5; 
+ 127   2                      //ÁôÁ½¸öÐ¡Êýµã¾Í*100£¬+0.5ÊÇËÄÉáÎåÈë£¬ÒòÎªCÓïÑÔ¸¡µãÊý×ª»»ÎªÕûÐÍµÄÊ±ºò°ÑÐ¡Êýµã
+ 128   2                      //ºóÃæµÄÊý×Ô¶¯È¥µô£¬²»¹ÜÊÇ·ñ´óÓÚ0.5£¬¶ø+0.5Ö®ºó´óÓÚ0.5µÄ¾ÍÊÇ½ø1ÁË£¬Ð¡ÓÚ0.5µÄ¾Í
+ 129   2                      //ËãÓÉÏ0.5£¬»¹ÊÇÔÚÐ¡ÊýµãºóÃæ¡£
+ 130   2       
+ 131   2              }
+ 132   1              else
+ 133   1              {                       
+ 134   2                      LCD1602_GotoXY(1,05);
+ 135   2                  LCD1602_Write(1,'+');               //ÏÔÊ¾¸º
+ 136   2                      datas[0]=0x2b;//°Ñ¡°+¡±µÄASCIIÂë´æ·ÅÔÚdatas[]Êý×éµÚÒ»Î»
+ 137   2                              
+ 138   2                      tp=temp;//ÒòÎªÊý¾Ý´¦ÀíÓÐÐ¡ÊýµãËùÒÔ½«ÎÂ¶È¸³¸øÒ»¸ö¸¡µãÐÍ±äÁ¿
+ 139   2                      //Èç¹ûÎÂ¶ÈÊÇÕýµÄÄÇÃ´£¬ÄÇÃ´ÕýÊýµÄÔ­Âë¾ÍÊÇ²¹ÂëËü±¾Éí
+ 140   2                      temp=tp*0.0625*100+0.5; 
+ 141   2                      //ÁôÁ½¸öÐ¡Êýµã¾Í*100£¬+0.5ÊÇËÄÉáÎåÈë£¬ÒòÎªCÓïÑÔ¸¡µãÊý×ª»»ÎªÕûÐÍµÄÊ±ºò°ÑÐ¡Êýµã
+ 142   2                      //ºóÃæµÄÊý×Ô¶¯È¥µô£¬²»¹ÜÊÇ·ñ´óÓÚ0.5£¬¶ø+0.5Ö®ºó´óÓÚ0.5µÄ¾ÍÊÇ½ø1ÁË£¬Ð¡ÓÚ0.5µÄ¾Í
+ 143   2                      //Ëã¼ÓÉÏ0.5£¬»¹ÊÇÔÚÐ¡ÊýµãºóÃæ¡£
+ 144   2              }
+ 145   1              datas[1] = temp / 10000;
+ 146   1              datas[2] = temp % 10000 / 1000;
+ 147   1              datas[3] = temp % 1000 / 100;
+ 148   1              datas[4] = temp % 100 / 10;
+ 149   1              datas[5] = temp % 10;
+ 150   1              
+ 151   1              LCD1602_GotoXY(1,6);
+ 152   1              LCD1602_Write(1,'0'+datas[1]); //°ÙÎ»   
+ 153   1              LCD1602_GotoXY(1,7);
+ 154   1              LCD1602_Write(1,'0'+datas[2]); //Ê®Î»
+ 155   1              LCD1602_GotoXY(1,8);
+ 156   1              LCD1602_Write(1,'0'+datas[3]); //¸öÎ» 
+ 157   1              LCD1602_GotoXY(1,9);
+ 158   1              LCD1602_Write(1,'.');              //ÏÔÊ¾ ¡®.¡¯
+ 159   1              LCD1602_GotoXY(1,10);
+ 160   1              LCD1602_Write(1,'0'+datas[4]); //ÏÔÊ¾Ð¡ÊýµãºóÒ»Î»
+ 161   1              LCD1602_GotoXY(1,11);
+ 162   1              LCD1602_Write(1,'0'+datas[5]); //ÏÔÊ¾Ð¡ÊýµãºóÁ½Î»
+ 163   1              LCD1602_GotoXY(1,12);
+ 164   1              LCD1602_Write(1,0x43); //ÏÔÊ¾¡°C¡±
+ 165   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    460    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

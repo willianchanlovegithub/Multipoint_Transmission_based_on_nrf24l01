@@ -1,0 +1,112 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              12/11/2018 15:47:59 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include) DEBUG OBJECTEXTE
+                    -ND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          
+   2          //240128满屏可直接显示16行*30列=480个字符
+   3          //240128满屏可显示8行*15列=120个16*16字模的汉字
+   4          //lcdwc(0x90);//关闭文本显示，关闭图形显示
+   5          //lcdwc(0x94);//启用文本显示，关闭图形显示
+   6          //lcdwc(0x98);//关闭文本显示，启用图形显示
+   7          //lcdwc(0x9c);//启用文本显示，启用图形显示
+   8          
+   9          #include <reg52.h>
+  10          #include <intrins.h>
+  11          #include "LCD240128.h"
+  12          #include "NRF24L01.h"
+  13          #include "Serial_Com.h"
+  14          
+  15          //1s延时函数
+  16          void Delay1000ms()              //@11.0592MHz
+  17          {
+  18   1              unsigned char i, j, k;
+  19   1      
+  20   1              _nop_();
+  21   1              i = 8;
+  22   1              j = 1;
+  23   1              k = 243;
+  24   1              do
+  25   1              {
+  26   2                      do
+  27   2                      {
+  28   3                              while (--k);
+  29   3                      } while (--j);
+  30   2              } while (--i);
+  31   1      }
+  32          
+  33          //主函数
+  34          void main(void)
+  35          {   
+  36   1              lcdreset();                                     //初始化液晶显示控制器
+  37   1              lcdfill(0x00);                          //清屏
+  38   1              UART_Init();                            //初始化串口通信
+  39   1              init_NRF24L01();                        //初始化nRF24L01无线模块
+  40   1              RX_Mode();                                      //初始化nRF24L01到接收模式
+  41   1              
+  42   1              //用于检测nRF24L01模块是否存在或者正常工作
+  43   1              if(!NRF24L01_Check())
+  44   1              {
+  45   2                      DirectDisplayString(0,5,"  nRF24L01+ Module Check OK!  ");
+  46   2                      //图片显示: 在(104,50)位置显示32*32点阵图标
+  47   2                      XPOS=104;
+  48   2                      YPOS=50;
+  49   2                      putimage(Img_check_ok_32);      //写数据到当前LCDRAM地址中
+  50   2                      Delay1000ms();
+  51   2                      lcdfill(0x00);                          //清屏
+  52   2                      beautifulshow();                        //图形画面展示程序
+  53   2                      DirectDisplayString(0,5, ">>> A-Temperature: NO DATA <<<");
+  54   2                      DirectDisplayString(0,7, ">>> B-Temperature: NO DATA <<<");
+C51 COMPILER V9.59.0.0   MAIN                                                              12/11/2018 15:47:59 PAGE 2   
+
+  55   2                      DirectDisplayString(0,9, ">>> C-Temperature: NO DATA <<<");
+  56   2                      DirectDisplayString(0,11,">>> D-Temperature: NO DATA <<<");
+  57   2              }
+  58   1              else
+  59   1              {
+  60   2                      DirectDisplayString(0,5,"nRF24L01+ Module Check Failed!");
+  61   2                      //图片显示: 在(104,50)位置显示32*32点阵图标
+  62   2                      XPOS=104;
+  63   2                      YPOS=50;
+  64   2                      putimage(Img_check_no_ok_32);   //写数据到当前LCDRAM地址中
+  65   2                      while(1);
+  66   2              }
+  67   1              
+  68   1              while(1)
+  69   1              {
+  70   2                      //根据不同的数据通道显示各自的数据
+  71   2                      if(!Rx_Pipe_Num_Choose())
+  72   2                      {
+  73   3                              //格式PutString(x轴坐标,y轴坐标,数据);
+  74   3                              DirectDisplayString(18,5, RxBuf_P0);//显示数据通道0的数据
+  75   3                              DirectDisplayString(18,7, RxBuf_P1);//显示数据通道1的数据
+  76   3                              DirectDisplayString(18,9, RxBuf_P2);//显示数据通道2的数据
+  77   3                              DirectDisplayString(18,11,RxBuf_P3);//显示数据通道3的数据
+  78   3                              
+  79   3                              //串口通信发送数据
+  80   3                              UART_SendStr(RxBuf_P0);//数据通道0的数据通过串口发送给上位机
+  81   3                              UART_SendStr(RxBuf_P1);//数据通道1的数据通过串口发送给上位机
+  82   3                              UART_SendStr(RxBuf_P2);//数据通道2的数据通过串口发送给上位机
+  83   3                              UART_SendStr(RxBuf_P3);//数据通道3的数据通过串口发送给上位机
+  84   3                      }
+  85   2              }
+  86   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    263    ----
+   CONSTANT SIZE    =    186    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

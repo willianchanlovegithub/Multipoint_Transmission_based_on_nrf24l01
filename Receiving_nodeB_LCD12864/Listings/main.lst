@@ -1,0 +1,76 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              09/25/2018 22:12:56 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include) DEBUG OBJECTEXTE
+                    -ND PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "NRF24L01.h"
+   3          #include "LCD12864.h"
+   4          #include "DS18B20.h"
+   5          
+   6          //************************************主函数*******************************/
+   7          void main(void)
+   8          {
+   9   1        init_NRF24L01();
+  10   1        Lcd12864_Init();
+  11   1        Lcd12864_Delay_ms(10);
+  12   1        
+  13   1        //用于检测nRF24L01模块是否存在或者正常工作
+  14   1        if(!NRF24L01_Check())
+  15   1        {
+  16   2          Lcd12864_WriteSomething(0 , 0 , "nRF24L01+ Module");
+  17   2          Lcd12864_WriteSomething(1 , 0 , "Check OK!");
+  18   2          Lcd12864_WriteSomething(2 , 0 , "System detection");
+  19   2          Lcd12864_WriteSomething(3 , 0 , "is normal!");
+  20   2          Lcd12864_Delay_ms(1500);
+  21   2          Lcd12864_WriteSomething(0 , 0 , "A-TEMP:         ");
+  22   2          Lcd12864_WriteSomething(1 , 0 , "B-TEMP:         ");
+  23   2          Lcd12864_WriteSomething(2 , 0 , "C-TEMP:         ");
+  24   2          Lcd12864_WriteSomething(3 , 0 , "D-TEMP:         ");
+  25   2        }
+  26   1        else
+  27   1        {
+  28   2          Lcd12864_WriteSomething(0 , 0 , "nRF24L01+ Module");
+  29   2          Lcd12864_WriteSomething(1 , 0 , "Check Failed!");
+  30   2          Lcd12864_WriteSomething(2 , 0 , "只可显示本机温度");
+  31   2          Lcd12864_WriteSomething(3 , 0 , "L-temp:         ");
+  32   2          while(1)
+  33   2          {
+  34   3            LcdDisplayTemp(Ds18b20ReadTemp());//把处理后的温度值在12864上显示出来（本机温度）
+  35   3          }
+  36   2        }
+  37   1        
+  38   1        RX_Mode();
+  39   1        
+  40   1        while(1)
+  41   1        {
+  42   2          if(!Rx_Pipe_Num_Choose())
+  43   2          {
+  44   3            Lcd12864_WriteSomething(0 , 4 , RxBuf_P0);//显示数据通道0的数据
+  45   3            Lcd12864_WriteSomething(1 , 4 , RxBuf_P1);//显示数据通道1的数据
+  46   3            Lcd12864_WriteSomething(2 , 4 , RxBuf_P2);//显示数据通道2的数据
+  47   3            Lcd12864_WriteSomething(3 , 4 , RxBuf_P3);//显示数据通道3的数据
+  48   3          }
+  49   2        }
+  50   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    250    ----
+C51 COMPILER V9.59.0.0   MAIN                                                              09/25/2018 22:12:56 PAGE 2   
+
+   CONSTANT SIZE    =    171    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

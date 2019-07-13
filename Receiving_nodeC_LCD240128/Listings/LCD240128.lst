@@ -1,0 +1,601 @@
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LCD240128
+OBJECT MODULE PLACED IN .\Objects\LCD240128.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE source\LCD240128.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include) DEBU
+                    -G OBJECTEXTEND PRINT(.\Listings\LCD240128.lst) OBJECT(.\Objects\LCD240128.obj)
+
+line level    source
+
+   1          
+   2          #include "LCD240128.h"
+   3          #include "DotCode.h"
+   4          #include <intrins.h>
+   5          
+   6          unsigned char XPOS;                     //ÁÐ·½ÏòLCDµãÕóÎ»ÖÃÖ¸Õë
+   7          unsigned char YPOS;                     //ÐÐ·½ÏòLCDµãÕóÎ»ÖÃÖ¸Õë
+   8          bit CharImageReverse;           //×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+   9          
+  10          //-------------------------------------------------------------------------------
+  11          //×Ó³ÌÐòÃû³Æ:void beautifulshow(void)
+  12          //¹¦ÄÜ:Í¼ÐÎ»­ÃæÕ¹Ê¾³ÌÐò
+  13          //-------------------------------------------------------------------------------
+  14          void beautifulshow(void)
+  15          {
+  16   1              //Í¼Æ¬·´ÏÔ: ÔÚ(0,0)Î»ÖÃÏÔÊ¾32*32µãÕóÍ¼±ê
+  17   1          XPOS=0;
+  18   1          YPOS=0;
+  19   1              CharImageReverse=1;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  20   1          putimage(Img_temp1_32);     //Ð´Êý¾Ýµ½µ±Ç°LCDRAMµØÖ·ÖÐ
+  21   1              CharImageReverse=0;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  22   1              
+  23   1              //Í¼Æ¬·´ÏÔ: ÔÚ(208,0)Î»ÖÃÏÔÊ¾32*32µãÕóÍ¼±ê
+  24   1          XPOS=208;
+  25   1          YPOS=0;
+  26   1          CharImageReverse=1;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  27   1          putimage(Img_temp2_32);     //Ð´Êý¾Ýµ½µ±Ç°LCDRAMµØÖ·ÖÐ
+  28   1              CharImageReverse=0;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  29   1              
+  30   1              //×Ö·û´®ÏÔÊ¾: ÔÚ(40,8)Î»ÖÃÏÔÊ¾"ÎÞÏß¶àµãÎÂ¶È²É¼¯ÏµÍ³"×Ö·û´®.
+  31   1              XPOS=40;
+  32   1              YPOS=16;
+  33   1              putstr(ChineseCode1,ChineseCharDot1,"¶àµãÎÞÏßÎÂ¶È²É¼¯ÏµÍ³",10);
+  34   1      
+  35   1              //×Ö·û´®·´ÏÔ: ÔÚ(40,8)Î»ÖÃ·´ÏÔ"ÎÞÏß¶àµãÎÂ¶È²É¼¯ÏµÍ³"×Ö·û´®.
+  36   1              XPOS=40;
+  37   1              YPOS=16;
+  38   1              CharImageReverse=1;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  39   1              putstr(ChineseCode1,ChineseCharDot1,"¶àµãÎÞÏßÎÂ¶È²É¼¯ÏµÍ³",10);
+  40   1              CharImageReverse=0;//×Ö·û¼°Í¼ÐÎµÄ·´ÏÔ¿ØÖÆ,0(Õý³£ÏÔÊ¾),1(·´ÏÔ)
+  41   1              
+  42   1              //×Ö·û´®ÏÔÊ¾: ÔÚ(40,0)Î»ÖÃÏÔÊ¾"WELCOME TO MY SYSTEM"×Ö·û´®.
+  43   1              XPOS=40;
+  44   1              YPOS=0;
+  45   1              putstr(EnglishCode1,EnglishCharDot1,"WELCOME TO MY SYSTEM",10);
+  46   1      
+  47   1              //»æÍ¼: ÒÔ(0,35)Îª×óÉÏ½Ç-ÒÔ(239,51)ÎªÓÒÏÂ½Ç,»­¾ØÐÎ.
+  48   1              rect(0,35,239,51,1);
+  49   1              rect(0,51,239,67,1);
+  50   1              rect(0,67,239,83,1);
+  51   1              rect(0,83,239,99,1);
+  52   1      
+  53   1              //»æÍ¼: ÒÔ(0,104)-(119,127)-(239,104)Èýµã×ö¶¥µã,»­Èý½ÇÐÎ.
+  54   1              triangle(0  ,104,119,127,239,104,1);//µÈ±ßÈý½ÇÐÎ
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 2   
+
+  55   1              triangle(0  ,107,104,127,0  ,127,1);//Ö±½ÇÈý½ÇÐÎ1
+  56   1              triangle(239,107,134,127,239,127,1);//Ö±½ÇÈý½ÇÐÎ2
+  57   1      }
+  58          
+  59          //-------------------------------------------------------------------------------
+  60          //ÒÔÏÂputcharÎª×Ö·û¶ÔÏóµÄ»ù±¾×Ó³ÌÐò,putstrÎª×Ö·û¶ÔÏóµÄÀ©³ä×Ó³ÌÐò,getchinesecodepos,
+  61          //getenglishcodeposÎª×Ö·û¶ÔÏóµÄ¸¨Öú×Ó³ÌÐò.
+  62          //-------------------------------------------------------------------------------
+  63          //×Ó³ÌÐòÃû³Æ:void putchar(unsigned int c).
+  64          //¹¦ÄÜ:ÔÚ(XPOS,YPOS)Î»ÖÃÐ´µ¥¸ö×Ö·ûµãÕó,Èôc>128 ±íÊ¾ÎªÖÐÎÄ×Ö·û,·ñÔòÎªÎ÷ÎÄ×Ö·û
+  65          //-------------------------------------------------------------------------------
+  66          void putchar(unsigned int *C_E_Code_Name,unsigned char *C_E_CharDot_Name,unsigned int c,unsigned int CharN
+             -umber)            //¶¨Î»Ð´×Ö·û×Ó³ÌÐò
+  67          {   
+  68   1              if(c>128)
+  69   1              putsizeimage(CHINESECHARSIZE,CHINESECHARSIZE,getchinesecodepos(C_E_Code_Name,C_E_CharDot_Name,c,Ch
+             -arNumber));
+  70   1          else
+  71   1              putsizeimage(ENGLISHCHARSIZE,CHINESECHARSIZE,getenglishcodepos(C_E_Code_Name,C_E_CharDot_Name,c,Ch
+             -arNumber));
+  72   1      }
+  73          
+  74          //-------------------------------------------------------------------------------
+  75          //×Ó³ÌÐòÃû³Æ:void putstr(unsigned char code *s).
+  76          //¹¦ÄÜ:Ð´×Ö·û´®µãÕó,Èô*s=0 ±íÊ¾×Ö·û´®½áÊø.
+  77          //-------------------------------------------------------------------------------
+  78          void putstr(unsigned int *C_E_Code_Name,unsigned char *C_E_CharDot_Name,unsigned char code *s,unsigned int
+             - CharNumber)      //ÏÔÊ¾×Ö·û´®×Ó³ÌÐò,×Ö·ûÂëÎª0Ê±ÍË³ö
+  79          {   
+  80   1              unsigned int c;
+  81   1          while(1)
+  82   1          {   
+  83   2                      c=*s;
+  84   2              s++;
+  85   2              if(c==0)
+  86   2                              break;
+  87   2              if(c<128)
+  88   2                  putchar(C_E_Code_Name,C_E_CharDot_Name,c,CharNumber);                       //Ó¢ÎÄ×Ö·û´®
+  89   2              else
+  90   2              {   
+  91   3                              putchar(C_E_Code_Name,C_E_CharDot_Name,c*256+*s,CharNumber);    //ÖÐÎÄ×Ö·û´®
+  92   3                  s++;
+  93   3              }
+  94   2          }
+  95   1      }
+  96          
+  97          //-------------------------------------------------------------------------------
+  98          //×Ó³ÌÐòÃû³Æ:unsigned char code *getchinesecodepos(unsigned char ac).
+  99          //¹¦ÄÜ:¸ù¾Ýµ±Ç°ÖÐÎÄ×Ö·ûÂë²é±íºó¼ÆËãµÃµ½µ±Ç°ÖÐÎÄ×Ö·ûÂëµÄ×Ö¿âµãÕóÎ»ÖÃ.
+ 100          //-------------------------------------------------------------------------------
+ 101          unsigned char code *getchinesecodepos(unsigned int *ChineseCode_Name,unsigned char *ChineseCharDot_Name,un
+             -signed int ac,unsigned int CharNumber)
+ 102          {   
+ 103   1              unsigned int min,max,mid,midc;
+ 104   1          min=0;
+ 105   1          max=CharNumber-1;
+ 106   1          while(1)
+ 107   1          {   
+ 108   2                      if(max-min<2)
+ 109   2              {   
+ 110   3                              if(ChineseCode_Name[min]==ac)
+ 111   3                      mid=min;
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 3   
+
+ 112   3                  else if(ChineseCode_Name[max]==ac)
+ 113   3                      mid=max;
+ 114   3                  else
+ 115   3                      mid=0;
+ 116   3                  break;
+ 117   3              }
+ 118   2              mid=(max+min)/2;
+ 119   2              midc=ChineseCode_Name[mid];
+ 120   2              if(midc==ac)
+ 121   2                  break;
+ 122   2              else if(midc>ac)
+ 123   2                  max=mid-1;
+ 124   2              else
+ 125   2                  min=mid+1;
+ 126   2          }
+ 127   1          return ChineseCharDot_Name+mid*CHINESECHARDOTSIZE;
+ 128   1      }
+ 129          
+ 130          //-------------------------------------------------------------------------------
+ 131          //×Ó³ÌÐòÃû³Æ:unsigned char code *getenglishcodepos(unsigned char ac).
+ 132          //¹¦ÄÜ:¸ù¾Ýµ±Ç°ASCII×Ö·ûÂë²é±íºó¼ÆËãµÃµ½µ±Ç°ASCII×Ö·ûÂëµÄ×Ö¿âµãÕóÎ»ÖÃ.
+ 133          //-------------------------------------------------------------------------------
+ 134          unsigned char code *getenglishcodepos(unsigned int *EnglishCode_Name,unsigned char *EnglishCharDot_Name,un
+             -signed char ac,unsigned int CharNumber)
+ 135          {   
+ 136   1              unsigned char min,max,mid,midc;
+ 137   1          min=0;
+ 138   1          max=CharNumber-1;
+ 139   1          while(1)
+ 140   1          {   
+ 141   2                      if(max-min<2)
+ 142   2              {   
+ 143   3                              if(EnglishCode_Name[min]==ac)
+ 144   3                      mid=min;
+ 145   3                  else if(EnglishCode_Name[max]==ac)
+ 146   3                      mid=max;
+ 147   3                  else
+ 148   3                      mid=0;
+ 149   3                  break;
+ 150   3              }
+ 151   2              mid=(max+min)/2;
+ 152   2              midc=EnglishCode_Name[mid];
+ 153   2              if(midc==ac)
+ 154   2                  break;
+ 155   2              else if(midc>ac)
+ 156   2                  max=mid-1;
+ 157   2              else
+ 158   2                  min=mid+1;
+ 159   2          }
+ 160   1          return EnglishCharDot_Name+mid*ENGLISHCHARDOTSIZE;
+ 161   1      }
+ 162          
+ 163          //-------------------------------------------------------------------------------
+ 164          //ÒÔÏÂputsizeimageÎªÍ¼ÐÎ¶ÔÏóµÄ»ù±¾×Ó³ÌÐò,putimageÎªÍ¼ÐÎ¶ÔÏóµÄÀ©³ä×Ó³ÌÐò
+ 165          //-------------------------------------------------------------------------------
+ 166          //×Ó³ÌÐòÃû³Æ:void putsizeimage(unsigned char XSIZE,unsigned YSIZE,unsigned char code *s)
+ 167          //¹¦ÄÜ:ÔÚ(XPOS,YPOS)Î»ÖÃ»æÖÆXSIZEÁÐ¼°YISZEÐÐµãÕóµÄÍ¼ÐÎ*S.
+ 168          //-------------------------------------------------------------------------------
+ 169          void putsizeimage(unsigned char XSIZE,unsigned char YSIZE,unsigned char code *s)
+ 170          {  
+ 171   1              unsigned char k,lx,ly,a1,a2,x,Lcd_Mask;
+ 172   1              k=XPOS&0x7;
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 4   
+
+ 173   1              XSIZE+=k;
+ 174   1              x=XPOS;
+ 175   1              s--;
+ 176   1              for(ly=0;ly<YSIZE;ly++,YPOS++)
+ 177   1              {  
+ 178   2                      for(XPOS=x,lx=k;lx<XSIZE;)
+ 179   2                      {  
+ 180   3                              unsigned char p;
+ 181   3                              a1=*s;
+ 182   3                              s++;
+ 183   3                              a2=*s;
+ 184   3                              if(CharImageReverse)
+ 185   3                              {   
+ 186   4                                      a1=~a1;
+ 187   4                                      a2=~a2;
+ 188   4                              }
+ 189   3                              for(p=0;p<k;p++)
+ 190   3                              {  
+ 191   4                                      a2>>=1;
+ 192   4                                      if((a1&0x1)==1)
+ 193   4                                              a2+=0x80;
+ 194   4                                      a1>>=1;
+ 195   4                              }
+ 196   3                              if((k==0) && (XSIZE<lx+8))
+ 197   3                              {   
+ 198   4                                      lcdpos();
+ 199   4                                      lx+=8;
+ 200   4                                      XPOS+=8;
+ 201   4                              }
+ 202   3                              else
+ 203   3                              {   
+ 204   4                                      lcdpos();
+ 205   4                                      a1=lcdrd();
+ 206   4                                      lcdpos();
+ 207   4                                      lx+=8;
+ 208   4                                      XPOS+=8;
+ 209   4                                      Lcd_Mask=0xff;
+ 210   4                                      p=XSIZE&0x7;
+ 211   4                                      while(p>0)
+ 212   4                                      {   
+ 213   5                                              Lcd_Mask>>=1;
+ 214   5                                              XPOS--;
+ 215   5                                              p--;
+ 216   5                                      }
+ 217   4                                      p=0xff;
+ 218   4                                      while(XSIZE<lx)
+ 219   4                                      {   
+ 220   5                                              lx--;
+ 221   5                                              XPOS--;
+ 222   5                                              p<<=1;
+ 223   5                                      }
+ 224   4                                      Lcd_Mask&=p;
+ 225   4                                      a2&=Lcd_Mask;
+ 226   4                                      a2|=a1&(~Lcd_Mask);
+ 227   4                              }
+ 228   3                              lcdwd(a2);
+ 229   3                      }
+ 230   2            if((k!=0) && (XSIZE&0x7 != 0) && (k >= XSIZE&0x7)) s--;
+ 231   2              }
+ 232   1              if(XDOTS-x < XSIZE-k)
+ 233   1                      XPOS=0;
+ 234   1              else
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 5   
+
+ 235   1                      YPOS-=YSIZE;
+ 236   1      }
+ 237          
+ 238          //-------------------------------------------------------------------------------
+ 239          //×Ó³ÌÐòÃû³Æ:void putimage(unsigned char code *s).
+ 240          //¹¦ÄÜ:ÔÚ(XPOS,YPOS)Î»ÖÃ»æÖÆXSIZE[*s]ÁÐ¼°YISZE[*(s+1)]ÐÐµãÕóµÄÍ¼ÐÎ[*(s+2)].
+ 241          //-------------------------------------------------------------------------------
+ 242          void putimage(unsigned char code *s)    //ÏÔÊ¾Í¼ÐÎ×Ó³ÌÐò
+ 243          {   
+ 244   1              unsigned char XSIZE,YSIZE;
+ 245   1          XSIZE=*s;
+ 246   1          s++;
+ 247   1          YSIZE=*s;
+ 248   1          s++;
+ 249   1          putsizeimage(XSIZE,YSIZE,s);
+ 250   1      }
+ 251          
+ 252          //-------------------------------------------------------------------------------
+ 253          //ÒÔÏÂpointÎª»æÍ¼²Ù×÷µÄ»ù±¾×Ó³ÌÐò,line,rect,triangleÎª»æÍ¼²Ù×÷µÄÀ©³ä×Ó³ÌÐò.
+ 254          //-------------------------------------------------------------------------------
+ 255          //×Ó³ÌÐòÃû³Æ:void point(bit b).
+ 256          //¹¦ÄÜ:°´bµÄÊý¾ÝÔÚ(XPOS,YPOS)Î»ÖÃ»æÖÆµã.
+ 257          //-------------------------------------------------------------------------------
+ 258          void point(bit b)
+ 259          {   
+ 260   1              unsigned char i,Lcd_Mask,j;
+ 261   1          Lcd_Mask=0x80;
+ 262   1          i=XPOS&0x7;
+ 263   1          while(i>0)
+ 264   1          {   
+ 265   2                      Lcd_Mask>>=1;
+ 266   2              i--;
+ 267   2          }
+ 268   1          lcdpos();
+ 269   1          j=lcdrd();
+ 270   1          lcdpos();
+ 271   1          if(b)
+ 272   1              lcdwd(j|Lcd_Mask);
+ 273   1          else
+ 274   1              lcdwd(j&(~Lcd_Mask));
+ 275   1      }
+ 276          
+ 277          //-------------------------------------------------------------------------------
+ 278          //×Ó³ÌÐòÃû³Æ:void line(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,bit b)
+ 279          //¹¦ÄÜ:°´bµÄÊý¾Ý»æÖÆ(x0,y0)-(x1,y1)µÄÖ±Ïß
+ 280          //-------------------------------------------------------------------------------
+ 281          void line(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,bit b)
+ 282          {   
+ 283   1              unsigned char dx,dy;
+ 284   1              unsigned int dk;
+ 285   1              XPOS=x0;
+ 286   1              YPOS=y0;
+ 287   1              point(b);
+ 288   1              dx=(x1>=x0)?x1-x0:x0-x1;
+ 289   1              dy=(y1>=y0)?y1-y0:y0-y1;
+ 290   1              if(dx==dy)
+ 291   1              {
+ 292   2                      while(XPOS!=x1)
+ 293   2                      {
+ 294   3                              if(x1>x0) XPOS++;else XPOS--;
+ 295   3                  if(y1>y0) YPOS++;else YPOS--;
+ 296   3                              point(b);
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 6   
+
+ 297   3              }
+ 298   2          }
+ 299   1          else if (dx>dy)
+ 300   1          {   
+ 301   2                      dk=dy;
+ 302   2              dy=0;
+ 303   2              while(XPOS!=x1)
+ 304   2              {   
+ 305   3                              if(x1>x0) XPOS++;else XPOS--;
+ 306   3                  dy++;
+ 307   3                  if(y1>y0) YPOS=y0+(dk*dy+dx/2)/dx;else YPOS=y0-(dk*dy+dx/2)/dx;
+ 308   3                  point(b);
+ 309   3              }
+ 310   2          }
+ 311   1          else
+ 312   1          {   
+ 313   2                      dk=dx;
+ 314   2              dx=0;
+ 315   2              while(YPOS!=y1)
+ 316   2              {   
+ 317   3                              if(y1>y0) YPOS++;else YPOS--;
+ 318   3                  dx++;
+ 319   3                  if(x1>x0) XPOS=x0+(dk*dx+dy/2)/dy;else XPOS=x0-(dk*dx+dy/2)/dy;
+ 320   3                  point(b);
+ 321   3              }
+ 322   2          }
+ 323   1      }
+ 324          
+ 325          //-------------------------------------------------------------------------------
+ 326          //×Ó³ÌÐòÃû³Æ:void rect(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,bit b)
+ 327          //¹¦ÄÜ:°´bµÄÊý¾Ý»æÖÆ(x0,y0)-(x1,y1)µÄ¾ØÐÎ
+ 328          //-------------------------------------------------------------------------------
+ 329          void rect(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,bit b)
+ 330          {   
+ 331   1              line(x0,y0,x1,y0,b);
+ 332   1              line(x1,y0,x1,y1,b);
+ 333   1              line(x1,y1,x0,y1,b);
+ 334   1              line(x0,y1,x0,y0,b);
+ 335   1      }
+ 336          
+ 337          //-------------------------------------------------------------------------------
+ 338          //×Ó³ÌÐòÃû³Æ:void triangle(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned ch
+             -ar x2,unsigned char y2,bit b)
+ 339          //¹¦ÄÜ:°´bµÄÊý¾Ý»æÖÆ(x0,y0)-(x1,y1)-(x2,y2)µÄÈý½ÇÐÎ
+ 340          //-------------------------------------------------------------------------------
+ 341          void triangle(unsigned char x0,unsigned char y0,unsigned char x1,unsigned char y1,unsigned char x2,unsigne
+             -d char y2,bit b)
+ 342          {   
+ 343   1              line(x0,y0,x1,y1,b);
+ 344   1              line(x1,y1,x2,y2,b);
+ 345   1              line(x2,y2,x0,y0,b);
+ 346   1      }
+ 347          
+ 348          //-------------------------------------------------------------------------------
+ 349          //ÒÔÏÂlcdfill,lcdpos,lcdresetÎªT6963ÐÍÓ²¼þ½Ó¿ÚµÄ240128Òº¾§ÏÔÊ¾Ä£¿éµÄ»ù±¾×Ó³ÌÐò
+ 350          //-------------------------------------------------------------------------------
+ 351          //×Ó³ÌÐòÃû³Æ:void lcdfill(unsigned char d).
+ 352          //¹¦ÄÜ:ÕûÆÁÏÔÊ¾d±íÊ¾µÄ×Ö½ÚÊý¾Ý.
+ 353          //-------------------------------------------------------------------------------
+ 354          void lcdfill(unsigned char d)           //ÕûÆÁÏÔÊ¾d´ú±íµÄ×Ö½ÚÊý¾Ý×Ó³ÌÐò
+ 355          {   
+ 356   1              unsigned char i,j;
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 7   
+
+ 357   1              lcdwc3(0x24,0x00,0x00);                 //ÉèÖÃÄÚ²¿RAMµØÖ·Îª0
+ 358   1              lcdwc(0xb0);                                            //½øÈë×Ô¶¯Ð´·½Ê½£¬Ò»¶¨Òª¼ÓÉÏ¡°×Ô¶¯Ð´Ä£Ê½¡±µÄ´úÂë£¬²ÅÄÜÕýÕæµÄÂúÆÁÏÔÊ¾£¡£¡£¡£¡£¡£¡£¡£¡£¡£
+             -¡
+ 359   1              for(i=0;i<128;i++)                              //128ÐÐ
+ 360   1                      for(j=0;j<30;j++)               //30¸ö×Ö½ÚÊý¾Ý¹²240ÁÐ
+ 361   1                              lcdwd(d);                   //ËÍÍ¼ÐÎÊý¾Ý
+ 362   1              lcdwc(0xb2);                                            //ÍË³ö×Ô¶¯¶ÁÐ´·½Ê½
+ 363   1      }
+ 364          
+ 365          //-------------------------------------------------------------------------------
+ 366          //×Ó³ÌÐòÃû³Æ:void lcdpos(void).
+ 367          //¹¦ÄÜ:ÉèÖÃ×ø±êµã(XPOS,YPOS)Î»ÖÃ¶ÔÓ¦µÄÄÚ²¿RAMµØÖ·.
+ 368          //-------------------------------------------------------------------------------
+ 369          void lcdpos(void)                       //ÉèÖÃ×ø±êµã(XPOS,YPOS)ÄÚ²¿RAMµØÖ·µÄ×Ó³ÌÐò
+ 370          {  
+ 371   1              unsigned int CurrentAddress;
+ 372   1              //LCDRAMµØÖ·=30*YPOS+(XPOS/8)+3840(or+0x0f00)£¬ÒòÎª³õÊ¼»¯µÄÊ±ºòÉèÖÃÍ¼ÐÎÏÔÊ¾ÇøÊ×µØÖ·Îªlcdwc3(0x42,0x00,0x0
+             -f)£¨ÏÈÐ´µÚ°ËÎ»ÔÙÐ´¸ß°ËÎ»£©
+ 373   1              CurrentAddress=YPOS*30+XPOS/8+0x0f00;//¼Ó3840£¨3840ÊÇ0x0f00µÄÊ®½øÖÆ±í´ï£©¿ÉÒÔ±ÜÃâÍ¼ÐÎºÍÎÄ±¾Í¬Ê±ÏÔÊ¾Ê±ÂÒÂë
+             -£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
+ 374   1              lcdwc3(0x24,CurrentAddress&0xff,CurrentAddress/256);
+ 375   1      }
+ 376          
+ 377          //-------------------------------------------------------------------------------
+ 378          //×Ó³ÌÐòÃû³Æ:void lcdreset(void)
+ 379          //¹¦ÄÜ:Òº¾§ÏÔÊ¾¿ØÖÆÆ÷³õÊ¼»¯
+ 380          //-------------------------------------------------------------------------------
+ 381          void lcdreset(void)                                     //Òº¾§ÏÔÊ¾¿ØÖÆÆ÷³õÊ¼»¯×Ó³ÌÐò
+ 382          {   
+ 383   1              CEPIN=0;                                                //Ê¹ÄÜÆ¬Ñ¡ÐÅºÅ
+ 384   1              WRPIN=1;                                                //½ûÖ¹Ð´
+ 385   1              RDPIN=1;                                                //½ûÖ¹¶Á
+ 386   1              lcdwc3(0x24,0x00,0x00);                 //ÅäÖÃÎÄ±¾ÏÔÊ¾Ê×µØÖ·
+ 387   1              lcdwc3(0x40,0x00,0x00);                 //ÉèÖÃÎÄ±¾ÏÔÊ¾ÇøÊ×µØÖ·
+ 388   1              lcdwc3(0x41,0x1e,0x00);                 //ÉèÖÃÎÄ±¾ÏÔÊ¾Çø¿í¶È
+ 389   1              lcdwc3(0x42,0x00,0x0f);                 //ÉèÖÃÍ¼ÐÎÏÔÊ¾ÇøÊ×µØÖ·£¬ÎÄ±¾ÇøµØÖ·ºÍÍ¼ÐÎÇøµØÖ·Òª´í¿ª£¬ÎÄ±¾µÄ»°128*30=3840=0x0f0
+             -0£¬ËùÒÔÍ¼ÐÎÊ×µØÖ·ÓÃ0x0f00£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
+ 390   1              lcdwc3(0x43,0x1e,0x00);                 //ÉèÖÃÍ¼ÐÎÏÔÊ¾Çø¿í¶ÈÎª30×Ö½Ú¹²240µã
+ 391   1              lcdwc3(0x22,0x02,0x00);                 //CGRAMÆ«ÖÃµØÖ·ÉèÖÃ
+ 392   1              lcdwc(0x80);                    //OR MODE
+ 393   1              lcdwc(0x9c);                                    //ÆôÓÃÎÄ±¾ÏÔÊ¾£¬ÆôÓÃÍ¼ÐÎÏÔÊ¾
+ 394   1      }
+ 395          
+ 396          //-------------------------------------------------------------------------------
+ 397          //ÒÔÏÂlcdwd,lcdrd,lcdwc,lcdwc2,lcdwc3ÎªT6963CÐÍÓ²¼þ½Ó¿Ú[MCS51Ä£Äâ¿ÚÏß½Ó¿Ú·½Ê½]µÄ
+ 398          //    »ù±¾×Ó³ÌÐò;lcdwdata,lcdrdata,lcdwaitidleÎªÄÚ²¿×Ó³ÌÐò.
+ 399          //-------------------------------------------------------------------------------
+ 400          //×Ó³ÌÐòÃû³Æ:void lcdwd(unsigned char d).
+ 401          //¹¦ÄÜ:ÏòÒº¾§ÏÔÊ¾¿ØÖÆÆ÷Ð´Í¼ÐÎÊý¾Ý.
+ 402          //-------------------------------------------------------------------------------
+ 403          void lcdwd(unsigned char d)             //ËÍÍ¼ÐÎÊý¾Ý×Ó³ÌÐò
+ 404          {   
+ 405   1              lcdwc2(0xc0,d);
+ 406   1      }
+ 407          
+ 408          //-------------------------------------------------------------------------------
+ 409          //×Ó³ÌÐòÃû³Æ:unsigned char lcdrd(void).
+ 410          //¹¦ÄÜ:´ÓÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ÖÐ¶ÁÍ¼ÐÎÊý¾Ý.
+ 411          //-------------------------------------------------------------------------------
+ 412          unsigned char lcdrd(void)               //¶ÁÍ¼ÐÎÊý¾Ý×Ó³ÌÐò
+ 413          {   
+ 414   1              lcdwc(0xc1);                        //ËÍ¶ÁÍ¼ÐÎÊý¾ÝÖ¸Áî
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 8   
+
+ 415   1              return lcdrdata();                  //¶ÁÊý¾Ý
+ 416   1      }
+ 417          
+ 418          //-------------------------------------------------------------------------------
+ 419          //×Ó³ÌÐòÃû³Æ:lcdwc(unsigned char c).
+ 420          //¹¦ÄÜ:ÏòÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ËÍÖ¸Áî.
+ 421          //-------------------------------------------------------------------------------
+ 422          void lcdwc(unsigned char c)             //ËÍÖ¸Áî×Ó³ÌÐò
+ 423          {   
+ 424   1              lcdwaitidle();                      //¼ì²âÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ÊÇ·ñ¿ÕÏÐ
+ 425   1              lcd_DATA=c;
+ 426   1              CDPIN=1;                            //CD=1 CE=0 WR=0
+ 427   1              CEPIN=0;
+ 428   1              WRPIN=0;
+ 429   1              _nop_();
+ 430   1              WRPIN=1;
+ 431   1              CEPIN=1;
+ 432   1      }
+ 433          
+ 434          //-------------------------------------------------------------------------------
+ 435          //×Ó³ÌÐòÃû³Æ:lcdwc2(unsigned char c,unsigned char d).
+ 436          //¹¦ÄÜ:ÏòÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ËÍ2×Ö½ÚÖ¸Áî.
+ 437          //-------------------------------------------------------------------------------
+ 438          void lcdwc2(unsigned char c,unsigned char d) //ËÍ2×Ö½ÚÖ¸Áî×Ó³ÌÐò
+ 439          {   
+ 440   1              lcdwdata(d);                        //ËÍÖ¸Áî²ÎÊý
+ 441   1              lcdwc(c);                           //ËÍÖ¸ÁîÂë
+ 442   1      }
+ 443          
+ 444          //-------------------------------------------------------------------------------
+ 445          //×Ó³ÌÐòÃû³Æ:lcdwc3(unsigned char c,unsigned char d1,unsigned char d2).
+ 446          //¹¦ÄÜ:ÏòÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ËÍ3×Ö½ÚÖ¸Áî.
+ 447          //-------------------------------------------------------------------------------
+ 448          void lcdwc3(unsigned char c,unsigned char d1,unsigned char d2) //ËÍ3×Ö½ÚÖ¸Áî×Ó³ÌÐò
+ 449          {   
+ 450   1              lcdwdata(d1);                        //ËÍÖ¸Áî²ÎÊý1
+ 451   1              lcdwdata(d2);                        //ËÍÖ¸Áî²ÎÊý2
+ 452   1              lcdwc(c);                            //ËÍÖ¸ÁîÂë
+ 453   1      }
+ 454          
+ 455          //-------------------------------------------------------------------------------
+ 456          //×Ó³ÌÐòÃû³Æ:unsigned char lcdrdata(void).
+ 457          //¹¦ÄÜ:´ÓÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ÖÐ¶ÁÊý¾Ý.
+ 458          //-------------------------------------------------------------------------------
+ 459          unsigned char lcdrdata(void)            //¶ÁÊý¾Ý×Ó³ÌÐò
+ 460          {   
+ 461   1              unsigned char d;
+ 462   1              lcdwaitidle();                      //¼ì²âÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ÊÇ·ñ¿ÕÏÐ
+ 463   1              lcd_DATA=0xff;
+ 464   1              CDPIN=0;                            //CD=0 CE=0 RD=0
+ 465   1              CEPIN=0;
+ 466   1              RDPIN=0;
+ 467   1              _nop_();
+ 468   1              d=lcd_DATA;
+ 469   1              RDPIN=1;
+ 470   1              CEPIN=1;
+ 471   1              return d;
+ 472   1      }
+ 473          
+ 474          //-------------------------------------------------------------------------------
+ 475          //×Ó³ÌÐòÃû³Æ:void lcdwdata(unsigned char d).
+ 476          //¹¦ÄÜ:ÏòÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ËÍÊý¾Ý.
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 9   
+
+ 477          //-------------------------------------------------------------------------------
+ 478          void lcdwdata(unsigned char d)          //ËÍÊý¾Ý×Ó³ÌÐò
+ 479          {   
+ 480   1              lcdwaitidle();                      //¼ì²âÒº¾§ÏÔÊ¾¿ØÖÆÆ÷ÊÇ·ñ¿ÕÏÐ
+ 481   1              lcd_DATA=d;
+ 482   1              CDPIN=0;                            //CD=0 CE=0 WR=0
+ 483   1              CEPIN=0;
+ 484   1              WRPIN=0;
+ 485   1              _nop_();
+ 486   1              WRPIN=1;
+ 487   1              CEPIN=1;
+ 488   1      }
+ 489          
+ 490          //-------------------------------------------------------------------------------
+ 491          //×Ó³ÌÐòÃû³Æ:voidlcdwaitidle(void).
+ 492          //¹¦ÄÜ:Ã¦¼ì²â,ÔÚ¶ÔÒº¾§ÏÔÊ¾¿ØÖÆÆ÷²Ù×÷µÄÃ¿Ò»ÌõÖ¸ÁîÖ®Ç°,Ðè¼ì²âÒº¾§ÏÔÊ¾Æ÷ÊÇ·ñ¿ÕÏÐ.
+ 493          //-------------------------------------------------------------------------------
+ 494          void lcdwaitidle(void)                  //Ã¦¼ì²â×Ó³ÌÐò
+ 495          {   
+ 496   1              unsigned char i,d;
+ 497   1              lcd_DATA=0xff;
+ 498   1              CDPIN=1;                            //CD=1 CE=0 RD=0
+ 499   1              CEPIN=0;
+ 500   1              for(i=0;i<20;i++)                   //
+ 501   1              {   RDPIN=0;
+ 502   2                      _nop_();
+ 503   2                      d=lcd_DATA;
+ 504   2                      RDPIN=1;
+ 505   2                      if( (d&0x3) == 0x3 ) break;     //D0D1=11 ¿ÕÏÐÍË³ö
+ 506   2              }
+ 507   1              CEPIN=1;
+ 508   1      }
+ 509          
+ 510          //-------------------------------------------------------------------------------
+ 511          //ÒÔÏÂCharLocateXY,DirectDisplayChar,DirectDisplayStringÎªÖ±½ÓÏÔÊ¾×Ö·û´®µÄ»ù±¾×Ó³ÌÐò
+ 512          //-------------------------------------------------------------------------------
+ 513          //×Ó³ÌÐòÃû³Æ:void CharLocateXY(uchar x,uchar y)
+ 514          //¹¦ÄÜ:Ö±½ÓÏÔÊ¾Ê±Éè¶¨ÏÔÊ¾µØÖ·º¯Êý
+ 515          void CharLocateXY(uchar x,uchar y)
+ 516          {
+ 517   1              uint  temp;
+ 518   1              temp= XDOTS/8*y + x;
+ 519   1              lcdwc3(0x24,temp&0xff,temp/256);
+ 520   1      }
+ 521          
+ 522          //-------------------------------------------------------------------------------
+ 523          //×Ó³ÌÐòÃû³Æ:void DirectDisplayChar(uchar x,uchar y,uchar CharByte)
+ 524          //¹¦ÄÜ:Ö±½ÓÏÔÊ¾Ò»¸öASCIIÂëº¯Êý
+ 525          void DirectDisplayChar(uchar x,uchar y,uchar CharByte)
+ 526          {
+ 527   1              CharLocateXY(x,y);
+ 528   1              lcdwc2(0xC4,CharByte-0x20);     //ÄÚ²¿´øµÄÓ¢ÎÄ×Ö¿âÊÇ´Ó0x00¿ªÊ¼,Ò²¾ÍÊÇËµ¿Õ¸ñ0x20µÄ×Ö¿âÖµÊÇ0x00,ËùÒÔ-0x20
+ 529   1      }
+ 530          
+ 531          //-------------------------------------------------------------------------------
+ 532          //×Ó³ÌÐòÃû³Æ:void DirectDisplayString(uchar x,uchar y,uchar *str)
+ 533          //¹¦ÄÜ:Ö±½ÓÏÔÊ¾Ò»¸ö×Ö·û´®
+ 534          void DirectDisplayString(uchar x,uchar y,uchar *str)
+ 535          {
+ 536   1              while(*str != 0)
+ 537   1              {
+ 538   2                      if(x> (XDOTS/8-1))//×Ô¶¯»»ÐÐ
+C51 COMPILER V9.59.0.0   LCD240128                                                         12/11/2018 15:47:59 PAGE 10  
+
+ 539   2                      {
+ 540   3                              x=0;
+ 541   3                              y++;
+ 542   3                      }
+ 543   2                      DirectDisplayChar(x,y,*str);
+ 544   2                      ++x;
+ 545   2                      ++str;
+ 546   2              }
+ 547   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   2941    ----
+   CONSTANT SIZE    =   1422    ----
+   XDATA SIZE       =      2      95
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1       4
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
