@@ -26,6 +26,13 @@
 - 接收节点C Receiving_nodeC_LCD240128 可以接收以上四个发送节点的数据，通过 LCD240128 显示
 - 以上三个接收节点可以同时接收以上四个发送节点的数据，也可以单独工作，只是显示的 LCD 不一样而已
 
+## 注意事项
+
+- 所有发送节点和接收节点是基于 STC89C52RC 单片机开发的
+- 由于 nrf24l01 模块需要使用 SPI 总线控制和访问数据，而51单片机没有片上 SPI 资源，故使用软件 SPI
+- 使用 Keil 5 搭建的工程
+- 以上程序仅提供参考，有问题请提 issue
+
 ## 维护人信息
 
 [WillianChan](https://github.com/willianchanlovegithub)
