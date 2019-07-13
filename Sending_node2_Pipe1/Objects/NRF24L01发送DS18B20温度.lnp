@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\DS18B20.obj",
+".\Objects\LCD1602.obj",
+".\Objects\NRE24L01.obj" 
+TO ".\Objects\NRF24L01发送DS18B20温度" 
+PRINT(".\Listings\NRF24L01发送DS18B20温度.m51") RAMSIZE(256) 

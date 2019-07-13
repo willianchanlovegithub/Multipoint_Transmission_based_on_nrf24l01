@@ -1,0 +1,114 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              08/21/2018 21:17:01 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include;.\source) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include "NRF24L01.h"
+   3          #include "LCD1602.h"
+   4          #include "DS18B20.h"
+   5          
+   6          //************************************Ö÷º¯Êý*******************************/
+   7          void main(void)
+   8          {
+   9   1              uchar Display_Buff[7];
+  10   1              long uint Send_Count = 0;//¼ÇÂ¼·¢ËÍ´ÎÊý¼ÆÊýÆ÷
+  11   1              init_NRF24L01();
+  12   1      //      TX_Mode(); 
+  13   1              LCD1602_Initial();              //LCD1602³õÊ¼»¯
+  14   1              Delay10ms();
+  15   1              
+  16   1              //ÓÃÓÚ¼ì²ânRF24L01Ä£¿éÊÇ·ñ´æÔÚ»òÕßÕý³£¹¤×÷
+  17   1              if(!NRF24L01_Check())
+  18   1              {
+  19   2                      LCD1602_GotoXY(0,0);
+  20   2                      LCD1602_Display_NoXY("nRF24L01+ Module");
+  21   2                      LCD1602_GotoXY(1,0);
+  22   2                      LCD1602_Display_NoXY("Check OK!");      
+  23   2                      Delay1000ms();
+  24   2                      Delay1000ms();
+  25   2              }
+  26   1              else
+  27   1              {
+  28   2                      LCD1602_GotoXY(0,0);
+  29   2                      LCD1602_Display_NoXY("nRF24L01+ Module");
+  30   2                      LCD1602_GotoXY(1,0);
+  31   2                      LCD1602_Display_NoXY("Check Failed!");
+  32   2                      while(1);
+  33   2              }
+  34   1              
+  35   1              LCD1602_GotoXY(0,0);
+  36   1              LCD1602_Display_NoXY("Times:          ");
+  37   1              LCD1602_GotoXY(1,0);
+  38   1              LCD1602_Display_NoXY("Send:           ");
+  39   1              
+  40   1              TX_Mode();
+  41   1              
+  42   1              while(1)
+  43   1              {
+  44   2                      //¸ø·¢ËÍ»º³åÇøTxBuf¸³Öµ
+  45   2                      TxBuf[0]=datas[0];//ÏÔÊ¾¡°+¡±¡°-¡±
+  46   2                      TxBuf[1]=datas[1]+'0';//°ÙÎ»
+  47   2                      TxBuf[2]=datas[2]+'0';//Ê®Î»
+  48   2                      TxBuf[3]=datas[3]+'0';//¸öÎ»
+  49   2                      TxBuf[4]=0x2E;//ÏÔÊ¾Ð¡Êýµã¡°.¡±
+  50   2                      TxBuf[5]=datas[4]+'0';//Ð¡ÊýµãºóÒ»Î»
+  51   2                      TxBuf[6]=datas[5]+'0';//Ð¡ÊýµãºóÁ½Î»
+  52   2                      TxBuf[7]=0x43;//ÏÔÊ¾¡°C¡±
+  53   2                      
+  54   2                      //SPI_Write_Buf(WR_TX_PLOAD, Display_Buff, TX_PLOAD_WIDTH); // ´«ÊäµÄÊÇDisplay_Buff(´«Êä´ÎÊý)¶ø²»ÊÇ´«ÊäÄ
+C51 COMPILER V9.59.0.0   MAIN                                                              08/21/2018 21:17:01 PAGE 2   
+
+             -ÚÈÝ(TxBuf)
+  55   2                      SPI_Write_Buf(WR_TX_PLOAD, TxBuf, TX_PLOAD_WIDTH); // ×°ÔØÊý¾Ý
+  56   2                      SPI_RW_Reg(WRITE_REG + CONFIG, 0x0e); //CRCÊ¹ÄÜ£¬16Î»Ð£Ñé£¬ÉÏµç£¬·¢ÉäÄ£Ê½£¬Æô¶¯·¢Éä
+  57   2                      CE=1;
+  58   2                      Delay10us();       //ÑÓÊ±10us£¬µÈ´ý·¢ËÍÍê±Ï
+  59   2                      //CheckACK();   
+  60   2                      
+  61   2                      if(!CheckACK())//ÓÃÓÚ·¢Éä¼ì²âÓ¦´ðÐÅºÅ£¬·¢Éä³É¹¦·µ»Ø0
+  62   2                      {
+  63   3                              if(Send_Count<99999)
+  64   3                              {
+  65   4                                      Send_Count++;   //·¢ËÍ¼ÆÊýÆ÷¼Ó1 
+  66   4                                      Delay1000ms();//Ã¿¸ôÒ»Ãë·¢ËÍÒ»´ÎÊý¾Ý
+  67   4                              }
+  68   3                              else
+  69   3                                      Send_Count=1;
+  70   3                      }
+  71   2                      
+  72   2                      //ÏÂÃæLCD1602ÏÔÊ¾²Ù×÷
+  73   2                      Display_Buff[0] = Send_Count / 10000 + '0';
+  74   2                      Display_Buff[1] = (Send_Count % 10000) / 1000 + '0';
+  75   2                      Display_Buff[2] = (Send_Count % 1000) / 100 + '0';
+  76   2                      Display_Buff[3] = (Send_Count % 100) / 10 + '0';
+  77   2                      Display_Buff[4] = Send_Count % 10 + '0';
+  78   2                      Display_Buff[5] = '\0';
+  79   2                      
+  80   2                      //ÏÔÊ¾·¢ËÍµÄ´ÎÊý
+  81   2                      LCD1602_GotoXY(0,6);
+  82   2                      LCD1602_Display_NoXY(Display_Buff); 
+  83   2                      //°Ñ´¦ÀíºóµÄÎÂ¶ÈÖµÔÚ1602ÉÏÏÔÊ¾³öÀ´
+  84   2                      LcdDisplayTemp(Ds18b20ReadTemp());
+  85   2              }
+  86   1      }
+  87          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    449    ----
+   CONSTANT SIZE    =     75    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      11
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

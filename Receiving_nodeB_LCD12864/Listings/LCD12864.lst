@@ -1,0 +1,153 @@
+C51 COMPILER V9.59.0.0   LCD12864                                                          09/25/2018 22:12:56 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE LCD12864
+OBJECT MODULE PLACED IN .\Objects\LCD12864.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE source\LCD12864.c LARGE OPTIMIZE(8,SPEED) BROWSE INCDIR(.\include) DEBUG
+                    - OBJECTEXTEND PRINT(.\Listings\LCD12864.lst) TABS(2) OBJECT(.\Objects\LCD12864.obj)
+
+line level    source
+
+   1          
+   2          #include "LCD12864.h"
+   3          
+   4          unsigned char datas[9] = {0}; //µÚÒ»Î»´æ·ÅÕı¸º·ûºÅ£¬µÚ¶şÈıËÄÁùÆßÎ»´æ·ÅÎÂ¶ÈÖµ£¬µÚÎå°ËÎ»´æ·ÅĞ¡Êıµã'.'ºÍÎÂ¶Èµ
+             -¥Î»'C'
+   5          
+   6          //ÑÓÊ±×Óº¯Êı
+   7          void Lcd12864_Delay_ms(uint z)
+   8          {
+   9   1        uint x,y;
+  10   1        for(x=z;x>0;x--)
+  11   1          for(y=110;y>0;y--);
+  12   1      }
+  13          
+  14          //Ã¦¼ì²â£¨¾­¼ì²â£¬Ã»ÓĞÃ¦¼ì²âÒ²ÊÇÊµÏÖÏÔÊ¾¹¦ÄÜ£©
+  15          void Busy_Check(void)
+  16          {
+  17   1        LCD12864_DB = 0xff;
+  18   1        RS = 0;
+  19   1        RW = 1;//WRÎª¸ßµçÆ½µÄÊ±ºòÎª¶Á
+  20   1        LCDEN = 1;
+  21   1        while(LCD12864_DB & 0x80);//×´Ì¬×ÖÖĞSTA7£¬1£º½ûÖ¹£¬0£ºÊ¹ÄÜ¡£µ±½ûÖ¹Ê±£¨Ã¦Ê±£©£¬ÈÃ³ÌĞòÁôÔÚwhileÑ­»·ÖĞ
+  22   1        Lcd12864_Delay_ms(1);
+  23   1        LCDEN = 0;
+  24   1      }
+  25          
+  26          //Ğ´Ö¸Áî×Óº¯Êı£¨¸ù¾İÊı¾İÊÖ²áÊ±ĞòÍ¼À´Ğ´£©
+  27          void Lcd12864_Write_Cmd(uchar com)
+  28          {
+  29   1        Busy_Check();
+  30   1        RS = 0;//Ğ´Ö¸ÁîRSÎªµÍµçÆ½
+  31   1        RW = 0;//WRÎªµÍµçÆ½µÄÊ±ºòÎªĞ´
+  32   1        LCDEN = 1;
+  33   1        LCD12864_DB = com;
+  34   1        Lcd12864_Delay_ms(1);
+  35   1        LCDEN = 0;
+  36   1        
+  37   1      }
+  38          
+  39          //Ğ´Êı¾İ×Óº¯Êı£¨¸ù¾İÊı¾İÊÖ²áÊ±ĞòÍ¼À´Ğ´£©
+  40          void Lcd12864_Write_Data(uchar dat)
+  41          {
+  42   1        Busy_Check();
+  43   1        RS = 1;//Ğ´Êı¾İRSÎª¸ßµçÆ½
+  44   1        RW = 0;//WRÎªµÍµçÆ½µÄÊ±ºòÎªĞ´
+  45   1        LCDEN = 1;
+  46   1        LCD12864_DB = dat;
+  47   1        Lcd12864_Delay_ms(1);
+  48   1        LCDEN = 0;
+  49   1      }
+  50          
+  51          //³õÊ¼»¯×Óº¯Êı
+  52          void Lcd12864_Init(void)
+  53          {
+C51 COMPILER V9.59.0.0   LCD12864                                                          09/25/2018 22:12:56 PAGE 2   
+
+  54   1        Lcd12864_Write_Cmd(0x30);//¹¦ÄÜÉèÖÃ
+  55   1        Lcd12864_Delay_ms(5);
+  56   1        //Lcd12864_Write_Cmd(0x0f);//¹â±êÉèÖÃ¡£¿ªÏÔÊ¾£¬ÏÂ±êÏÔÊ¾£¬¹â±êÉÁË¸
+  57   1        //Lcd12864_Write_Cmd(0x0e);//¹â±êÉèÖÃ¡£¿ªÏÔÊ¾£¬ÏÂ±êÏÔÊ¾£¬¹â±ê²»ÉÁË¸
+  58   1        Lcd12864_Write_Cmd(0x0c);//¹â±êÉèÖÃ¡£¿ªÏÔÊ¾£¬ÏÂ±ê²»ÏÔÊ¾£¬¹â±ê²»ÉÁË¸
+  59   1        Lcd12864_Delay_ms(5);
+  60   1        Lcd12864_Write_Cmd(0x01);//ÇåÆÁ
+  61   1      }
+  62          
+  63          //ÏÔÊ¾µØÖ·ÉèÖÃ
+  64          void Lcd12864_WriteAddressSetting(uchar x , uchar y)
+  65          {
+  66   1        uchar addr;
+  67   1        if(x == 0) addr = 0x80 + y;//´ÓµÚÒ»ĞĞÏÔÊ¾
+  68   1        else if(x == 1) addr = 0x90 + y;//´ÓµÚ¶şĞĞÏÔÊ¾
+  69   1        else if(x == 2) addr = 0x88 + y;//´ÓµÚÈıĞĞÏÔÊ¾
+  70   1        else if(x == 3) addr = 0x98 + y;//´ÓµÚËÄĞĞÏÔÊ¾
+  71   1        Lcd12864_Write_Cmd(addr);
+  72   1      }
+  73          
+  74          //ÏÔÊ¾×Ö·ûº¯Êı·â×°
+  75          void Lcd12864_WriteSomething(uchar x , uchar y , uchar *str)
+  76          {
+  77   1        Lcd12864_WriteAddressSetting(x , y);
+  78   1        while(*str != '\0')
+  79   1        {
+  80   2          Lcd12864_Write_Data(*str++);
+  81   2          Lcd12864_Delay_ms(1);//¿ØÖÆÃ¿ĞĞÖĞÃ¿¸ö×Ö·ûÏÔÊ¾¿ìÂı£¬Ò²¿ÉÒÔ²»ÒªÑÓÊ±
+  82   2        }
+  83   1      }
+  84          
+  85          void LcdDisplayTemp(int temp)  //lcdÏÔÊ¾
+  86          {
+  87   1        float tp;  
+  88   1        if(temp < 0)  //µ±ÎÂ¶ÈÖµÎª¸ºÊı
+  89   1          {
+  90   2            Lcd12864_WriteSomething(3 , 4 , '-');  //ÏÔÊ¾¸º
+  91   2          datas[0]=0x2d;  //°Ñ¡°-¡±µÄASCIIÂë´æ·ÅÔÚdatas[]Êı×éµÚÒ»Î»
+  92   2          
+  93   2          //ÒòÎª¶ÁÈ¡µÄÎÂ¶ÈÊÇÊµ¼ÊÎÂ¶ÈµÄ²¹Âë£¬ËùÒÔ¼õ1£¬ÔÙÈ¡·´Çó³öÔ­Âë
+  94   2          temp=temp-1;
+  95   2          temp=~temp;
+  96   2          tp=temp;
+  97   2          temp=tp*0.0625*100+0.5; 
+  98   2          //ÁôÁ½¸öĞ¡Êıµã¾Í*100£¬+0.5ÊÇËÄÉáÎåÈë£¬ÒòÎªCÓïÑÔ¸¡µãÊı×ª»»ÎªÕûĞÍµÄÊ±ºò°ÑĞ¡Êıµã
+  99   2          //ºóÃæµÄÊı×Ô¶¯È¥µô£¬²»¹ÜÊÇ·ñ´óÓÚ0.5£¬¶ø+0.5Ö®ºó´óÓÚ0.5µÄ¾ÍÊÇ½ø1ÁË£¬Ğ¡ÓÚ0.5µÄ¾Í
+ 100   2          //ËãÓÉ?.5£¬»¹ÊÇÔÚĞ¡ÊıµãºóÃæ¡£
+ 101   2       
+ 102   2          }
+ 103   1        else
+ 104   1          {     
+ 105   2            Lcd12864_WriteSomething(3 , 4 , '+');  //ÏÔÊ¾Õı
+ 106   2          datas[0]=0x2b;  //°Ñ¡°+¡±µÄASCIIÂë´æ·ÅÔÚdatas[]Êı×éµÚÒ»Î»
+ 107   2            
+ 108   2          tp=temp;  //ÒòÎªÊı¾İ´¦ÀíÓĞĞ¡ÊıµãËùÒÔ½«ÎÂ¶È¸³¸øÒ»¸ö¸¡µãĞÍ±äÁ¿
+ 109   2                    //Èç¹ûÎÂ¶ÈÊÇÕıµÄÄÇÃ´£¬ÄÇÃ´ÕıÊıµÄÔ­Âë¾ÍÊÇ²¹ÂëËü±¾Éí
+ 110   2          temp=tp*0.0625*100+0.5; 
+ 111   2          //ÁôÁ½¸öĞ¡Êıµã¾Í*100£¬+0.5ÊÇËÄÉáÎåÈë£¬ÒòÎªCÓïÑÔ¸¡µãÊı×ª»»ÎªÕûĞÍµÄÊ±ºò°ÑĞ¡Êıµã
+ 112   2          //ºóÃæµÄÊı×Ô¶¯È¥µô£¬²»¹ÜÊÇ·ñ´óÓÚ0.5£¬¶ø+0.5Ö®ºó´óÓÚ0.5µÄ¾ÍÊÇ½ø1ÁË£¬Ğ¡ÓÚ0.5µÄ¾Í
+ 113   2          //Ëã¼ÓÉÏ0.5£¬»¹ÊÇÔÚĞ¡ÊıµãºóÃæ¡£
+ 114   2        }
+ 115   1        datas[1] = (temp / 10000)+'0';
+C51 COMPILER V9.59.0.0   LCD12864                                                          09/25/2018 22:12:56 PAGE 3   
+
+ 116   1        datas[2] = (temp % 10000 / 1000)+'0';
+ 117   1        datas[3] = (temp % 1000 / 100)+'0';
+ 118   1        datas[4] = '.';
+ 119   1        datas[5] = (temp % 100 / 10)+'0';
+ 120   1        datas[6] = (temp % 10)+'0';
+ 121   1        datas[7] = 'C';
+ 122   1        
+ 123   1        Lcd12864_WriteSomething(3 , 4 , datas); //ÔÚµÚËÄĞĞµÚËÄ¸ö×Ö·ûÎ»ÖÃ¿ªÊ¼ÏÔÊ¾ÎÂ¶È£¬Àı£º+025.52C
+ 124   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    527    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      9       9
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
